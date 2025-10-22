@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { useParams } from "react-router"
 import { MessagesContext } from "../../Context/MessagesContext"
 import "./NewMessageForm.css"
@@ -7,13 +7,22 @@ import { IoSend } from "react-icons/io5"
 export default function NewMessageForm() {
     const { workspace_id } = useParams()
     const { handleAddMessage } = useContext(MessagesContext)
+    const [message, setMessage] = useState("")
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        const text = e.target.message.value.trim()
-        if (text) {
-            handleAddMessage(workspace_id, text)
-            e.target.reset()
+        if (isSubmitting) return
+
+        const text = message.trim()
+        if (!text) return
+
+        setIsSubmitting(true)
+        try {
+            await handleAddMessage(workspace_id, text)
+            setMessage("")
+        } finally {
+            setTimeout(() => setIsSubmitting(false), 100)
         }
     }
 
@@ -22,11 +31,13 @@ export default function NewMessageForm() {
             <input
                 type="text"
                 name="message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder="Escribe un mensaje..."
                 className="message-input"
                 autoComplete="off"
             />
-            <button type="submit" className="btn-send">
+            <button type="submit" className="btn-send" disabled={isSubmitting}>
                 <IoSend />
             </button>
         </form>

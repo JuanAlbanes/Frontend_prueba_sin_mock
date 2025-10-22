@@ -1,18 +1,24 @@
-import { createContext, useState } from "react"
-import { getMessagesByWorkspaceId, addMessageToWorkspace, deleteMessage } from '../services/messagesService-slack.js'
+import { createContext, useState, useRef } from "react"
+import {
+    getMessagesByWorkspaceId,
+    addMessageToWorkspace,
+    deleteMessage,
+} from "../services/messagesService-slack.js"
 
 export const MessagesContext = createContext({
     messages: [],
     isMessagesLoading: true,
-    loadMessages: (workspace_id) => { },
-    handleAddMessage: (workspace_id, text) => { },
-    handleDeleteMessage: (workspace_id, message_id) => { },
+    loadMessages: (workspace_id) => {},
+    handleAddMessage: (workspace_id, text) => {},
+    handleDeleteMessage: (workspace_id, message_id) => {},
 })
 
 const MessagesContextProvider = ({ children }) => {
     const [messages, setMessages] = useState([])
     const [isMessagesLoading, setIsMessagesLoading] = useState(true)
     const [currentWorkspaceId, setCurrentWorkspaceId] = useState(null)
+
+    const lastMessageRef = useRef(null)
 
     const loadMessages = (workspace_id) => {
         setIsMessagesLoading(true)
@@ -25,17 +31,20 @@ const MessagesContextProvider = ({ children }) => {
     }
 
     const handleAddMessage = (workspace_id, text) => {
+        const last = lastMessageRef.current
+        if (last && last.workspace_id === workspace_id && last.text === text) return
+
         const newMessage = addMessageToWorkspace(workspace_id, text)
         if (newMessage) {
-            setMessages([...messages, newMessage])
+            setMessages((prev) => [...prev, newMessage])
+            lastMessageRef.current = { workspace_id, text }
         }
     }
 
     const handleDeleteMessage = (workspace_id, message_id) => {
         const success = deleteMessage(workspace_id, message_id)
         if (success) {
-            const updatedMessages = messages.filter((m) => m.id !== Number(message_id))
-            setMessages(updatedMessages)
+            setMessages((prev) => prev.filter((m) => m.id !== Number(message_id)))
         }
     }
 
