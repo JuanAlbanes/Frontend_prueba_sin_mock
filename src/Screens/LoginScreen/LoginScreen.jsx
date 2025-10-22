@@ -4,7 +4,8 @@ import useForm from '../../hooks/useForm.jsx'
 import { login } from '../../services/authService.js'
 import { useNavigate } from 'react-router'
 import LOCALSTORAGE_KEYS from '../../constants/localstorage.js'
-
+import { Link } from 'react-router'
+import './LoginScreen.css'
 const FORM_FIELDS = {
     EMAIL: 'email',
     PASSWORD: 'password'
@@ -56,10 +57,14 @@ export const LoginScreen = () => {
     )
 
     return (
-        <div>
+        <div className='global-container-login'>
+            <div className="top-nav_btn">
+                <Link to="/register" className="register-btn">Registrarse</Link>
+            </div>
+            <div className='container-login'>
             <h1>Iniciar Sesión</h1>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div className='container-email'>
                     <label htmlFor={FORM_FIELDS.EMAIL}>Email:</label>
                     <input
                         name={FORM_FIELDS.EMAIL}
@@ -68,7 +73,7 @@ export const LoginScreen = () => {
                         onChange={handleInputChange}
                     />
                 </div>
-                <div>
+                <div className='container-password'>
                     <label htmlFor={FORM_FIELDS.PASSWORD}>Contraseña:</label>
                     <input
                         name={FORM_FIELDS.PASSWORD}
@@ -93,6 +98,7 @@ export const LoginScreen = () => {
                     error && <span style={{ color: 'red' }}>{error.message}</span>
                 }
             </form>
+            </div>
         </div>
     )
 }

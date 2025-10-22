@@ -8,7 +8,7 @@ const mock_data = {
             messages: [
                 {
                     id: 1,
-                    emisor: "Juan Pérez",
+                    emisor: "Juan Albanés",
                     hora: "10:30",
                     texto: "Hola equipo! Cómo van con el nuevo proyecto?",
                     status: "visto",
