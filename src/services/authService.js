@@ -48,3 +48,21 @@ export async function login(email,password) {
         }
         return response_data
     }
+
+export async function resetPassword(email, newPassword) {
+    const response = await fetch(
+        `${ENVIRONMENT.URL_API}/api/auth/reset-password`,
+        {
+            method: HTTP_METHODS.PUT,
+            headers: {
+                [HEADERS.CONTENT_TYPE] : CONTENT_TYPE_VALUES.JSON,
+            },
+            body: JSON.stringify({ email, newPassword })
+        })
+    const response_data = await response.json()
+    
+    if (!response.ok) {
+        throw new Error(response_data.message)
+    }
+    return response_data
+}

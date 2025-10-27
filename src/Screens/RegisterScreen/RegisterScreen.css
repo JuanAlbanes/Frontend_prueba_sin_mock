@@ -113,6 +113,9 @@ input:focus {
 }
 
 button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #611f69;
     color: white;
     padding: 0.75rem;

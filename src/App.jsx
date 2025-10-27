@@ -5,6 +5,7 @@ import { LoginScreen } from './Screens/LoginScreen/LoginScreen'
 import AuthMiddleware from './Middlewares/AuthMiddlewares.jsx'
 import ChatScreen from './slack/Screens/ChatScreen/ChatScreen.jsx'
 import WorkspaceListScreen from './slack/Screens/WorkspaceListScreen/WorkspaceListScreen.jsx'
+import { ResetPasswordScreen } from './Screens/ResetPasswordScreen/ResetPasswordScreen.jsx'
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
       <Route path='/workspace/:workspace_id' element = {<ChatScreen/>}/>
       <Route path='/home' element={<WorkspaceListScreen />}/>
       </Route>
+      <Route path='/reset-password' element={<ResetPasswordScreen/>} />
     </Routes>
 
   )

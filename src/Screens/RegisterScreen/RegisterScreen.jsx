@@ -46,7 +46,7 @@ const RegisterScreen = () => {
     return (
         <div className='register-container'>
             <div className="top-nav">
-                <Link to="/login" className="login-btn">Loguearse</Link>
+                <Link to="/login" className="login-btn">Iniciar Sesión</Link>
             </div>
             <div className='register-left'>
                 <div className='logo-wrapper'>

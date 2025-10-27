@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router'
 import LOCALSTORAGE_KEYS from '../../constants/localstorage.js'
 import { Link } from 'react-router'
 import './LoginScreen.css'
+
 const FORM_FIELDS = {
     EMAIL: 'email',
     PASSWORD: 'password'
@@ -97,10 +98,15 @@ export const LoginScreen = () => {
                 {
                     error && <span style={{ color: 'red' }}>{error.message}</span>
                 }
+                
+                <div className="reset-password-link">
+                    <Link to="/reset-password" className="reset-password-btn">
+                        ¿Olvidaste tu contraseña?
+                    </Link>
+                </div>
             </form>
             </div>
         </div>
     )
 }
-
 
