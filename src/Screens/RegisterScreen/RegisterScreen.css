@@ -152,7 +152,10 @@ button:disabled {
 }
 
 @media (max-width: 900px) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 98c1362dbde0a7e123e425ecaf129be4827178cb
     .register-container {
         flex-direction: column;
     }
