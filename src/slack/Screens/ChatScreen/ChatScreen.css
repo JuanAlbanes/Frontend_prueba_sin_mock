@@ -1,7 +1,98 @@
 @import "../../../normalize/normalize.css";
+
 .chat-screen {
     display: flex;
     flex-direction: column;
     height: 100vh;
     background-color: #ffffff;
+}
+
+.chat-sidebar {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #f8f8f8;
+}
+
+.sidebar-tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background: white;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #616061;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.tab-button:hover {
+    background: #f0f0f0;
+    color: #1d1c1d;
+}
+
+.tab-button.active {
+    color: #1d1c1d;
+    border-bottom-color: #611f69;
+}
+
+.tab-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.tab-button:disabled:hover {
+    background: transparent;
+    color: #616061;
+}
+
+.sidebar-content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.no-workspace-selected,
+.no-channel-selected {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+}
+
+.no-workspace-selected p,
+.no-channel-selected p {
+    color: #616061;
+    margin: 0;
+}
+
+.no-channel-content {
+    max-width: 300px;
+}
+
+.no-channel-content h3 {
+    color: #1d1c1d;
+    margin-bottom: 8px;
+}
+
+.no-channel-content p {
+    color: #616061;
+    line-height: 1.4;
+}
+
+.sidebar-workspace-list {
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidebar-content > * {
+    height: 100%;
 }

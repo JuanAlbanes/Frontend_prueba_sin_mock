@@ -4,7 +4,15 @@ import Message from "../Message/Message"
 import "./Chat.css"
 
 export default function Chat() {
-    const { messages } = useContext(MessagesContext)
+    const { messages, isMessagesLoading } = useContext(MessagesContext)
+
+    if (isMessagesLoading) {
+        return (
+            <div className="container-no-messages">
+                <span>Cargando mensajes...</span>
+            </div>
+        )
+    }
 
     if (messages.length === 0) {
         return (
@@ -18,11 +26,14 @@ export default function Chat() {
         <div className="container-messages">
             {messages.map((message) => (
                 <Message
-                    key={message.id}
-                    id={message.id}
-                    emisor={message.emisor}
-                    hora={message.hora}
-                    texto={message.texto}
+                    key={message.id || message._id}
+                    id={message.id || message._id}
+                    emisor={message.emisor || message.user?.name || "Usuario"}
+                    hora={message.hora || new Date(message.created_at).toLocaleTimeString("es-ES", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    })}
+                    texto={message.texto || message.content}
                     status={message.status}
                     isMyMessage={message.isMyMessage}
                 />

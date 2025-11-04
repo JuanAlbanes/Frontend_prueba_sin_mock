@@ -1,34 +1,71 @@
-import { createContext, useState } from "react"
-import { getWorkspaceList, addWorkspace, deleteWorkspace } from "../services/workspaceService"
+import { createContext, useState, useEffect } from "react"
+import { getWorkspaceList, createWorkspace, deleteWorkspace } from "../services/workspaceService"
 
 export const WorkspaceContext = createContext({
     workspaces: [],
     isLoadingWorkspaces: true,
-    handleAddWorkspace: (name, description) => { },
-    handleDeleteWorkspace: (workspace_id) => { },
+    loadWorkspaces: async () => {}, // ✅ AÑADIDO: Esta función faltaba
+    handleAddWorkspace: async (name, description) => { },
+    handleDeleteWorkspace: async (workspace_id) => { },
+    handleSetWorkspaces: (workspaces) => { },
 })
 
 const WorkspaceContextProvider = ({ children }) => {
     const [workspaces, setWorkspaces] = useState([])
     const [isLoadingWorkspaces, setIsLoadingWorkspaces] = useState(true)
 
-    setTimeout(() => {
-        const workspace_list = getWorkspaceList()
-        setWorkspaces(workspace_list)
-        setIsLoadingWorkspaces(false)
-    }, 900)
+    // Cargar workspaces al montar el contexto
+    useEffect(() => {
+        loadWorkspaces()
+    }, [])
 
-    const handleAddWorkspace = (name, description) => {
-        const newWorkspace = addWorkspace(name, description)
-        setWorkspaces([...workspaces, newWorkspace])
+    const loadWorkspaces = async () => {
+        try {
+            setIsLoadingWorkspaces(true)
+            const response = await getWorkspaceList()
+            if (response.data && response.data.workspaces) {
+                setWorkspaces(response.data.workspaces)
+            }
+        } catch (error) {
+            console.error('Error loading workspaces:', error)
+        } finally {
+            setIsLoadingWorkspaces(false)
+        }
     }
 
-    const handleDeleteWorkspace = (workspace_id) => {
-        const success = deleteWorkspace(workspace_id)
-        if (success) {
-            const updatedWorkspaces = workspaces.filter((w) => w.id !== Number(workspace_id))
-            setWorkspaces(updatedWorkspaces)
+    const handleAddWorkspace = async (name, url_image = "") => {
+        try {
+            const response = await createWorkspace(name, url_image)
+            if (response.ok) {
+                // Recargar la lista completa para incluir el nuevo workspace
+                await loadWorkspaces()
+                return true
+            }
+            return false
+        } catch (error) {
+            console.error('Error creating workspace:', error)
+            throw error
         }
+    }
+
+    const handleDeleteWorkspace = async (workspace_id) => {
+        try {
+            const response = await deleteWorkspace(workspace_id)
+            if (response.ok) {
+                // Actualizar la lista localmente
+                const updatedWorkspaces = workspaces.filter((w) => w._id !== workspace_id)
+                setWorkspaces(updatedWorkspaces)
+                return true
+            }
+            return false
+        } catch (error) {
+            console.error('Error deleting workspace:', error)
+            throw error
+        }
+    }
+
+    const handleSetWorkspaces = (newWorkspaces) => {
+        setWorkspaces(newWorkspaces)
     }
 
     return (
@@ -36,8 +73,10 @@ const WorkspaceContextProvider = ({ children }) => {
             value={{
                 workspaces,
                 isLoadingWorkspaces,
+                loadWorkspaces, // ✅ AÑADIDO: Exportar la función
                 handleAddWorkspace,
                 handleDeleteWorkspace,
+                handleSetWorkspaces,
             }}
         >
             {children}

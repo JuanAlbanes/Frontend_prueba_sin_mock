@@ -1,46 +1,70 @@
-import mock_data from "../data/workspace-mock"
+import { getMessagesByChannel, sendMessage, updateMessage, deleteMessage } from "../../services/messageService.js"
 
-export const getMessagesByWorkspaceId = (workspace_id) => {
-    for (const workspace of mock_data.workspaces) {
-        if (Number(workspace.id) === Number(workspace_id)) {
-            return [...workspace.messages]
-        }
+export const getMessagesByWorkspaceId = async (workspace_id, channel_id) => {
+    try {
+        const response = await getMessagesByChannel(channel_id)
+        return response.data.messages || []
+    } catch (error) {
+        console.error('Error getting messages:', error)
+        return []
     }
-    return []
 }
 
-export const addMessageToWorkspace = (workspace_id, text) => {
-    for (const workspace of mock_data.workspaces) {
-        if (Number(workspace.id) === Number(workspace_id)) {
-            const newMessage = {
-                id: workspace.messages.length + 1,
-                emisor: "YO",
-                hora: new Date().toLocaleTimeString("es-ES", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }),
-                texto: text,
-                status: "enviado",
-                isMyMessage: true,
-            }
-            workspace.messages.push(newMessage)
-            return { ...newMessage }
+export const addMessageToWorkspace = async (workspace_id, channel_id, text) => {
+    try {
+        const response = await sendMessage(channel_id, text)
+        
+        // Formatear la respuesta para que coincida con la estructura esperada
+        const newMessage = {
+            id: response.data.message._id,
+            emisor: response.data.message.user?.name || "Usuario",
+            hora: new Date(response.data.message.created_at).toLocaleTimeString("es-ES", {
+                hour: "2-digit",
+                minute: "2-digit",
+            }),
+            texto: response.data.message.content,
+            status: "enviado",
+            isMyMessage: true,
+            created_at: response.data.message.created_at
         }
+        
+        return newMessage
+    } catch (error) {
+        console.error('Error sending message:', error)
+        throw error
     }
-    return null
 }
 
-export const deleteMessage = (workspace_id, message_id) => {
-    for (const workspace of mock_data.workspaces) {
-        if (Number(workspace.id) === Number(workspace_id)) {
-            const index = workspace.messages.findIndex(
-                (m) => m.id === Number(message_id)
-            )
-            if (index !== -1) {
-                workspace.messages.splice(index, 1)
-                return true
-            }
-        }
+export const deleteMessageFromWorkspace = async (workspace_id, message_id) => {
+    try {
+        const response = await deleteMessage(message_id)
+        return true
+    } catch (error) {
+        console.error('Error deleting message:', error)
+        return false
     }
-    return false
+}
+
+export const updateMessageInWorkspace = async (workspace_id, message_id, newText) => {
+    try {
+        const response = await updateMessage(message_id, newText)
+        
+        const updatedMessage = {
+            id: response.data.message._id,
+            emisor: response.data.message.user?.name || "Usuario",
+            hora: new Date(response.data.message.created_at).toLocaleTimeString("es-ES", {
+                hour: "2-digit",
+                minute: "2-digit",
+            }),
+            texto: response.data.message.content,
+            status: "editado",
+            isMyMessage: true,
+            created_at: response.data.message.created_at
+        }
+        
+        return updatedMessage
+    } catch (error) {
+        console.error('Error updating message:', error)
+        throw error
+    }
 }

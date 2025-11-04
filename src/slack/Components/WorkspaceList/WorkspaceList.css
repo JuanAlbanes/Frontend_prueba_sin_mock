@@ -1,196 +1,122 @@
 @import "../../../normalize/normalize.css";
 
 .workspace-list-container {
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background: #1a1d21;
-}
-
-.search-bar {
-    position: relative;
     padding: 16px;
-    border-bottom: 1px solid #40474d;
     background: #1a1d21;
-    flex-shrink: 0; 
-}
-
-.search-bar .input {
-    width: 100%;
-    padding: 10px 12px 10px 36px;
-    background: #2c2f34;
-    border: 1px solid #40474d;
-    border-radius: 6px;
     color: white;
-    font-size: 14px;
+    height: 100%;
+    border-right: 1px solid #343a41;
 }
 
-.search-bar .input:focus {
-    outline: none;
-    border-color: #1264a3;
-}
-
-.search-bar .input::placeholder {
-    color: #9ca1a6;
-}
-
-.search-icon {
-    position: absolute;
-    left: 28px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca1a6;
-    font-size: 16px;
-}
-
-.workspaces-container {
-    flex: 1;
-    padding: 8px;
-    overflow-y: auto;
-    min-height: 0;
-}
-
-.workspace-item {
-    padding: 16px 12px !important;
-    margin-bottom: 8px !important;
-    border-radius: 8px !important;
-    cursor: pointer;
-    transition: all 0.2s ease;
+.workspace-list-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    min-height: 70px;
-    max-height: 70px; 
-    background: #2c2f34;
-    border: 1px solid transparent;
+    margin-bottom: 16px;
 }
 
-.workspace-item:hover {
-    background-color: #36393f !important;
-    border-color: #40474d;
-}
-
-.workspace-item.active {
-    background-color: #1264a3 !important;
-    border-color: #1264a3;
-}
-
-.workspace-content {
-    flex: 1;
-    min-width: 0; 
-}
-
-.workspace-name {
-    font-weight: 600;
-    font-size: 14px;
+.workspace-list-header h3 {
+    margin: 0;
     color: #ffffff;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 16px;
+    font-weight: 600;
 }
 
-.workspace-description {
-    font-size: 12px;
-    color: #9ca1a6;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.workspace-meta {
-    font-size: 11px;
-    color: #9ca1a6;
-    margin-top: 4px;
-}
-
-.workspace-actions {
-    display: flex;
-    gap: 6px;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-}
-
-.workspace-item:hover .workspace-actions {
-    opacity: 1;
-}
-
-.btn-delete, .btn-edit {
-    padding: 6px;
-    background: transparent;
+.create-workspace-btn {
+    background: #611f69;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
-    color: #9ca1a6;
-    transition: all 0.2s ease;
-    font-size: 14px;
-}
-
-.btn-delete:hover {
-    color: #e01e5a;
-    background: rgba(224, 30, 90, 0.1);
-}
-
-.btn-edit:hover {
-    color: #1264a3;
-    background: rgba(18, 100, 163, 0.1);
-}
-
-.sidebar-footer {
-    padding: 16px;
-    border-top: 1px solid #40474d;
-    background: #1a1d21;
-    flex-shrink: 0; 
-}
-
-.create-workspace-sidebar-btn {
-    width: 100%;
-    padding: 12px 16px;
-    background: transparent;
-    border: 2px dashed #666;
-    border-radius: 8px;
-    color: #ddd;
+    color: white;
+    padding: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    font-weight: 500;
+    transition: background-color 0.2s;
 }
 
-.create-workspace-sidebar-btn:hover {
-    border-color: #1264a3;
-    color: #1264a3;
-    background: rgba(18, 100, 163, 0.1);
+.create-workspace-btn:hover {
+    background: #4a154b;
 }
 
 .btn-icon {
     font-size: 16px;
 }
 
-.no-workspaces {
-    padding: 40px 20px;
-    text-align: center;
-    color: #9ca1a6;
+.search-bar {
+    margin-bottom: 16px;
+}
+
+.search-bar .input {
+    width: 100%;
+    padding: 8px 12px;
+    background: #343a41;
+    border: 1px solid #4a4f57;
+    border-radius: 4px;
+    color: white;
     font-size: 14px;
 }
 
-.workspaces-container::-webkit-scrollbar {
-    width: 6px;
+.search-bar .input:focus {
+    outline: none;
+    border-color: #611f69;
 }
 
-.workspaces-container::-webkit-scrollbar-track {
-    background: #1a1d21;
+.workspaces-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.workspaces-container::-webkit-scrollbar-thumb {
-    background: #40474d;
-    border-radius: 3px;
+.workspace-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    gap: 8px;
 }
 
-.workspaces-container::-webkit-scrollbar-thumb:hover {
-    background: #666;
+.workspace-item:hover {
+    background: #343a41;
+}
+
+.workspace-item.active {
+    background: #611f69;
+}
+
+.workspace-icon {
+    font-size: 18px;
+    color: #9ca3af;
+}
+
+.workspace-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.workspace-name {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.workspace-role {
+    font-size: 12px;
+    color: #9ca3af;
+    text-transform: capitalize;
+}
+
+.loading-workspaces,
+.error-workspaces,
+.no-workspaces {
+    padding: 16px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.error-workspaces {
+    color: #ef4444;
 }

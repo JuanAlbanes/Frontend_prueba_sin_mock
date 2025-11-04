@@ -3,7 +3,6 @@ import useFetch from '../../hooks/useFetch.jsx'
 import useForm from '../../hooks/useForm.jsx'
 import { login } from '../../services/authService.js'
 import { useNavigate } from 'react-router'
-import LOCALSTORAGE_KEYS from '../../constants/localstorage.js'
 import { Link } from 'react-router'
 import './LoginScreen.css'
 
@@ -37,13 +36,14 @@ export const LoginScreen = () => {
 
     useEffect(
         () => {
-            console.log(response)
+            console.log('Login response:', response)
             if (response && response.ok) {
-                localStorage.setItem(LOCALSTORAGE_KEYS.AUTH_TOKEN, response.data.authorization_token)
-                navigate('/home')
+                // El token ya se guardó automáticamente en authService.js
+                // Redirigir a la página principal de workspaces
+                navigate('/workspace')
             }
         },
-        [response]
+        [response, navigate]
     )
 
     const {
@@ -72,6 +72,7 @@ export const LoginScreen = () => {
                         id={FORM_FIELDS.EMAIL}
                         type='email'
                         onChange={handleInputChange}
+                        value={login_form_state[FORM_FIELDS.EMAIL]}
                     />
                 </div>
                 <div className='container-password'>
@@ -81,6 +82,7 @@ export const LoginScreen = () => {
                         id={FORM_FIELDS.PASSWORD}
                         type='password'
                         onChange={handleInputChange}
+                        value={login_form_state[FORM_FIELDS.PASSWORD]}
                     />
                 </div>
                 {
@@ -109,4 +111,3 @@ export const LoginScreen = () => {
         </div>
     )
 }
-

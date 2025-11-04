@@ -12,12 +12,13 @@ function App() {
   return (
 
     <Routes>
-      <Route path='/' element={<RegisterScreen/>} />
+      <Route path='/' element={<LoginScreen/>} />
       <Route path='/login' element={<LoginScreen/>} />
       <Route path='/register' element={<RegisterScreen/>} />
       <Route element={<AuthMiddleware/>}>
-      <Route path='/workspace/:workspace_id' element = {<ChatScreen/>}/>
-      <Route path='/home' element={<WorkspaceListScreen />}/>
+        <Route path='/home' element={<WorkspaceListScreen />}/>
+        <Route path='/workspace' element={<WorkspaceListScreen />}/>
+        <Route path='/workspace/:workspace_id' element = {<ChatScreen/>}/>
       </Route>
       <Route path='/reset-password' element={<ResetPasswordScreen/>} />
     </Routes>
@@ -25,7 +26,7 @@ function App() {
   )
 }
 
-export default App 
+export default App
 
 
 

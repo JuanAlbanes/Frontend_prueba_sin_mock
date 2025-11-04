@@ -1,35 +1,178 @@
-import mock_data from "../data/workspace-mock"
+import ENVIRONMENT from "../../config/environment.js"
+import { CONTENT_TYPE_VALUES, HEADERS, HTTP_METHODS } from "../../constants/http.js"
+import { getToken } from "../../services/authService.js"
 
-export const getWorkspaceList = () => {
-    return mock_data.workspaces
-}
-
-export const getWorkspaceById = (workspace_id) => {
-    for (const workspace of mock_data.workspaces) {
-        if (Number(workspace.id) === Number(workspace_id)) {
-            return workspace
+export async function getWorkspaceList() {
+    const token = getToken()
+    
+    const response_http = await fetch(
+        `${ENVIRONMENT.URL_API}/api/workspaces`,
+        {
+            method: HTTP_METHODS.GET,
+            headers: {
+                [HEADERS.CONTENT_TYPE]: CONTENT_TYPE_VALUES.JSON,
+                Authorization: `Bearer ${token}`
+            }
         }
+    )
+
+    const response_data = await response_http.json()
+
+    if (!response_http.ok) {
+        throw new Error(response_data.message || `Error HTTP: ${response_http.status}`)
     }
-    return null
+
+    if (response_data.ok === false) {
+        throw new Error(response_data.message || 'Error del servidor')
+    }
+
+    return response_data
 }
 
-export const addWorkspace = (name, description) => {
-    const newWorkspace = {
-        id: mock_data.workspaces.length + 1,
+export async function getWorkspaceById(workspace_id) {
+    const token = getToken()
+    
+    const response_http = await fetch(
+        `${ENVIRONMENT.URL_API}/api/workspaces/${workspace_id}`,
+        {
+            method: HTTP_METHODS.GET,
+            headers: {
+                [HEADERS.CONTENT_TYPE]: CONTENT_TYPE_VALUES.JSON,
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    const response_data = await response_http.json()
+
+    if (!response_http.ok) {
+        throw new Error(response_data.message || `Error HTTP: ${response_http.status}`)
+    }
+
+    if (response_data.ok === false) {
+        throw new Error(response_data.message || 'Error del servidor')
+    }
+
+    return response_data
+}
+
+export async function createWorkspace(name, url_image = "") {
+    const token = getToken()
+    
+    // ✅ CORREGIDO: Usar url_image en lugar de url_img
+    const workspaceData = {
         name: name,
-        description: description,
-        created_at: new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }),
-        messages: [],
+        url_image: url_image
     }
-    mock_data.workspaces.push(newWorkspace)
-    return newWorkspace
+
+    const response_http = await fetch(
+        `${ENVIRONMENT.URL_API}/api/workspaces`,
+        {
+            method: HTTP_METHODS.POST,
+            headers: {
+                [HEADERS.CONTENT_TYPE]: CONTENT_TYPE_VALUES.JSON,
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(workspaceData)
+        }
+    )
+
+    const response_data = await response_http.json()
+
+    if (!response_http.ok) {
+        throw new Error(response_data.message || `Error HTTP: ${response_http.status}`)
+    }
+
+    if (response_data.ok === false) {
+        throw new Error(response_data.message || 'Error del servidor')
+    }
+
+    return response_data
 }
 
-export const deleteWorkspace = (workspace_id) => {
-    const index = mock_data.workspaces.findIndex((w) => w.id === Number(workspace_id))
-    if (index !== -1) {
-        mock_data.workspaces.splice(index, 1)
-        return true
+export async function updateWorkspace(workspace_id, name, url_image) {
+    const token = getToken()
+    
+    const workspaceData = {
+        name: name,
+        url_image: url_image
     }
-    return false
+
+    const response_http = await fetch(
+        `${ENVIRONMENT.URL_API}/api/workspaces/${workspace_id}`,
+        {
+            method: HTTP_METHODS.PUT,
+            headers: {
+                [HEADERS.CONTENT_TYPE]: CONTENT_TYPE_VALUES.JSON,
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(workspaceData)
+        }
+    )
+
+    const response_data = await response_http.json()
+
+    if (!response_http.ok) {
+        throw new Error(response_data.message || `Error HTTP: ${response_http.status}`)
+    }
+
+    if (response_data.ok === false) {
+        throw new Error(response_data.message || 'Error del servidor')
+    }
+
+    return response_data
+}
+
+export async function deleteWorkspace(workspace_id) {
+    const token = getToken()
+    
+    const response_http = await fetch(
+        `${ENVIRONMENT.URL_API}/api/workspaces/${workspace_id}`,
+        {
+            method: HTTP_METHODS.DELETE,
+            headers: {
+                [HEADERS.CONTENT_TYPE]: CONTENT_TYPE_VALUES.JSON,
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    const response_data = await response_http.json()
+
+    if (!response_http.ok) {
+        throw new Error(response_data.message || `Error HTTP: ${response_http.status}`)
+    }
+
+    if (response_data.ok === false) {
+        throw new Error(response_data.message || 'Error del servidor')
+    }
+
+    return response_data
+}
+
+export async function getAllWorkspaces() {
+    const token = getToken()
+    
+    const response_http = await fetch(
+        `${ENVIRONMENT.URL_API}/api/workspaces/all`,
+        {
+            method: HTTP_METHODS.GET,
+            headers: {
+                [HEADERS.CONTENT_TYPE]: CONTENT_TYPE_VALUES.JSON,
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
+
+    const response_data = await response_http.json()
+
+    if (!response_http.ok) {
+        throw new Error(response_data.message || `Error HTTP: ${response_http.status}`)
+    }
+
+    if (response_data.ok === false) {
+        throw new Error(response_data.message || 'Error del servidor')
+    }
+
+    return response_data
 }

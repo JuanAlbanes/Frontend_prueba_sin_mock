@@ -6,7 +6,7 @@ import { IoSend } from "react-icons/io5"
 
 export default function NewMessageForm() {
     const { workspace_id } = useParams()
-    const { handleAddMessage } = useContext(MessagesContext)
+    const { handleAddMessage, currentChannelId } = useContext(MessagesContext)
     const [message, setMessage] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -17,12 +17,21 @@ export default function NewMessageForm() {
         const text = message.trim()
         if (!text) return
 
+        // Verificar que tenemos un canal seleccionado
+        if (!currentChannelId) {
+            alert("Por favor, selecciona un canal primero")
+            return
+        }
+
         setIsSubmitting(true)
         try {
-            await handleAddMessage(workspace_id, text)
+            await handleAddMessage(workspace_id, currentChannelId, text)
             setMessage("")
+        } catch (error) {
+            console.error('Error sending message:', error)
+            alert("Error al enviar el mensaje: " + error.message)
         } finally {
-            setTimeout(() => setIsSubmitting(false), 100)
+            setIsSubmitting(false)
         }
     }
 
@@ -33,12 +42,17 @@ export default function NewMessageForm() {
                 name="message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Escribe un mensaje..."
+                placeholder={currentChannelId ? "Escribe un mensaje..." : "Selecciona un canal para enviar mensajes"}
                 className="message-input"
                 autoComplete="off"
+                disabled={!currentChannelId}
             />
-            <button type="submit" className="btn-send" disabled={isSubmitting}>
-                Enviar
+            <button 
+                type="submit" 
+                className="btn-send" 
+                disabled={isSubmitting || !currentChannelId || !message.trim()}
+            >
+                <IoSend className="send-icon" />
             </button>
         </form>
     )
