@@ -3,7 +3,7 @@ import { CONTENT_TYPE_VALUES, HEADERS, HTTP_METHODS } from "../constants/http.js
 
 export async function register(name, email, password) {
     const usuario = {
-        name,
+        username: name,  // ✅ CORREGIDO: Cambiado de "name" a "username"
         email,
         password
     }
