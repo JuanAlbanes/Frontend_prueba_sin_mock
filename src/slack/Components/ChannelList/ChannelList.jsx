@@ -6,41 +6,62 @@ import "./ChannelList.css"
 import { IoAdd, IoSearchSharp, IoLockClosed, IoSettings, IoTrash } from "react-icons/io5"
 import Swal from "sweetalert2"
 
-export default function ChannelList({ workspaceId, onChannelSelect }) {
+export default function ChannelList({ workspaceId, workspaceName, onChannelSelect }) {
     const { currentChannelId, loadMessages } = useContext(MessagesContext)
     const [channels, setChannels] = useState([])
     const [searchChannel, setSearchChannel] = useState("")
     const { loading, error, sendRequest } = useFetch()
 
+    // ✅ CORRECCIÓN CRÍTICA: Limpiar inmediatamente cuando workspaceId cambia
+    useEffect(() => {
+        console.log('🔄 Workspace ID cambiado, limpiando canales:', workspaceId, 'Nombre:', workspaceName)
+        setChannels([])
+        setSearchChannel("")
+    }, [workspaceId, workspaceName])
+
     const loadChannels = useCallback(async (workspaceId) => {
         if (!workspaceId) {
+            console.log('❌ No workspaceId provided, clearing channels')
             setChannels([])
             return
         }
         
         try {
+            console.log('📡 Loading channels for workspace:', workspaceId, '(', workspaceName, ')')
             const response = await getChannelsByWorkspace(workspaceId)
             
-            if (response && response.data && response.data.channels) {
+            // ✅ Validación más estricta
+            if (response && response.ok && response.data && Array.isArray(response.data.channels)) {
+                console.log('✅ Channels loaded for workspace', workspaceName, ':', response.data.channels.length, 'canales')
                 setChannels(response.data.channels)
             } else {
+                console.warn('⚠️ Invalid response structure:', response)
                 setChannels([])
             }
         } catch (error) {
-            console.error('Error cargando canales:', error)
+            console.error('❌ Error cargando canales:', error)
             setChannels([])
         }
-    }, [])
+    }, [workspaceName])
 
     useEffect(() => {
         if (workspaceId) {
+            console.log('🚀 Ejecutando loadChannels para workspace:', workspaceId, '(', workspaceName, ')')
             loadChannels(workspaceId)
-        } else {
-            setChannels([])
         }
-    }, [workspaceId, loadChannels])
+    }, [workspaceId, workspaceName, loadChannels])
 
     const handleCreateChannel = () => {
+        if (!workspaceId) {
+            Swal.fire({
+                title: "Error",
+                text: "No hay workspace seleccionado",
+                icon: "error",
+                confirmButtonColor: "#611f69",
+            })
+            return
+        }
+
         Swal.fire({
             title: "Crear nuevo canal",
             html: `
@@ -71,6 +92,7 @@ export default function ChannelList({ workspaceId, onChannelSelect }) {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
+                    console.log('🆕 Creando canal en workspace:', workspaceName)
                     const response = await createChannel(
                         result.value.name, 
                         result.value.description, 
@@ -78,21 +100,22 @@ export default function ChannelList({ workspaceId, onChannelSelect }) {
                         result.value.isPrivate
                     )
                     
-                    if (response.ok) {
+                    if (response && response.ok) {
+                        console.log('✅ Canal creado, recargando lista para workspace:', workspaceName)
                         await loadChannels(workspaceId)
                         
                         Swal.fire({
                             title: "Canal creado!",
-                            text: `Canal "${result.value.name}" creado exitosamente`,
+                            text: `Canal "${result.value.name}" creado exitosamente en ${workspaceName}`,
                             icon: "success",
                             confirmButtonColor: "#611f69",
                             timer: 2000,
                         })
                     } else {
-                        throw new Error(response.message || 'Error al crear el canal')
+                        throw new Error(response?.message || 'Error al crear el canal')
                     }
                 } catch (error) {
-                    console.error('Error creando canal:', error)
+                    console.error('❌ Error creando canal:', error)
                     Swal.fire({
                         title: "Error",
                         text: error.message || 'Error al crear el canal',
@@ -142,7 +165,8 @@ export default function ChannelList({ workspaceId, onChannelSelect }) {
                             result.value.description, 
                             result.value.isPrivate
                         )
-                        if (response.ok) {
+                        // ✅ CORREGIDO: Validación mejorada de respuesta
+                        if (response && response.ok) {
                             await loadChannels(workspaceId)
                             
                             Swal.fire({
@@ -151,6 +175,8 @@ export default function ChannelList({ workspaceId, onChannelSelect }) {
                                 confirmButtonColor: "#611f69",
                                 timer: 1500,
                             })
+                        } else {
+                            throw new Error(response?.message || 'Error al actualizar el canal')
                         }
                     })
                 } catch (error) {
@@ -181,7 +207,8 @@ export default function ChannelList({ workspaceId, onChannelSelect }) {
                 try {
                     await sendRequest(async () => {
                         const response = await deleteChannel(channel._id)
-                        if (response.ok) {
+                        // ✅ CORREGIDO: Validación mejorada de respuesta
+                        if (response && response.ok) {
                             await loadChannels(workspaceId)
                             
                             Swal.fire({
@@ -190,6 +217,8 @@ export default function ChannelList({ workspaceId, onChannelSelect }) {
                                 confirmButtonColor: "#611f69",
                                 timer: 1500,
                             })
+                        } else {
+                            throw new Error(response?.message || 'Error al eliminar el canal')
                         }
                     })
                 } catch (error) {
@@ -237,8 +266,9 @@ export default function ChannelList({ workspaceId, onChannelSelect }) {
     return (
         <div className="channel-list-container">
             <div className="channel-list-header">
-                <h3>Canales</h3>
-                <button onClick={handleCreateChannel} className="create-channel-btn">
+                {  <h3>Canales de { workspaceName ? `(${workspaceName})`  : workspaceId ? `(ID: ${workspaceId})` : '(Sin workspace)'   } </h3> }
+                
+                <button onClick={handleCreateChannel} className="create-channel-btn" disabled={!workspaceId}>
                     <IoAdd className="btn-icon" />
                 </button>
             </div>

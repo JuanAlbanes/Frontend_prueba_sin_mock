@@ -18,6 +18,32 @@ export default function ChatScreen() {
     const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState('workspaces')
     const [error, setError] = useState(null)
+    const [workspaceName, setWorkspaceName] = useState(null)
+
+    // Función para encontrar el nombre del workspace
+    const getWorkspaceName = (workspaceId) => {
+        if (!workspaceId || workspaces.length === 0) return null;
+        
+        // Buscar en diferentes estructuras posibles
+        const foundWorkspace = workspaces.find(ws => {
+            // Caso 1: workspace directo
+            if (ws._id === workspaceId) return true;
+            // Caso 2: nested en propiedad workspace
+            if (ws.workspace && ws.workspace._id === workspaceId) return true;
+            // Caso 3: propiedad workspace_id
+            if (ws.workspace_id === workspaceId) return true;
+            return false;
+        });
+
+        if (foundWorkspace) {
+            // Extraer el nombre de diferentes estructuras posibles
+            return foundWorkspace.name || 
+                   foundWorkspace.workspace?.name || 
+                   foundWorkspace.workspace_name;
+        }
+        
+        return null;
+    };
 
     // Cargar workspaces si no están cargados
     useEffect(() => {
@@ -29,27 +55,38 @@ export default function ChatScreen() {
         }
     }, [workspaces.length, loadWorkspaces])
 
-    // Encontrar el workspace actual usando _id (MongoDB)
-    const currentWorkspace = workspaces.find((w) => w._id === workspace_id)
+    // Actualizar el nombre del workspace cuando cambien los parámetros
+    useEffect(() => {
+        if (workspace_id) {
+            const name = getWorkspaceName(workspace_id);
+            setWorkspaceName(name);
+        } else {
+            setWorkspaceName(null);
+        }
+    }, [workspace_id, workspaces])
+
+    // Forzar cambio a pestaña de workspaces cuando no hay workspace_id
+    useEffect(() => {
+        if (!workspace_id && activeTab === 'channels') {
+            setActiveTab('workspaces')
+        }
+    }, [workspace_id, activeTab])
 
     const handleWorkspaceSelect = (workspace) => {
-        const workspaceId = workspace._id
-        navigate(`/workspace/${workspaceId}`)
-        setActiveTab('channels')
-        setError(null) // Limpiar error al cambiar de workspace
+        const workspaceId = workspace._id || workspace.workspace?._id
+        if (workspaceId) {
+            navigate(`/workspace/${workspaceId}`)
+            setActiveTab('channels')
+            setError(null)
+        } else {
+            console.error('Workspace sin ID:', workspace)
+        }
     }
 
     const handleChannelSelect = (channel) => {
         setActiveTab('channels')
-        setError(null) // Limpiar error al seleccionar canal
+        setError(null)
     }
-
-    // Manejar errores de carga
-    useEffect(() => {
-        if (error) {
-            console.error('Error en ChatScreen:', error)
-        }
-    }, [error])
 
     const sidebarContent = (
         <div className="chat-sidebar">
@@ -93,7 +130,9 @@ export default function ChatScreen() {
                 ) : (
                     workspace_id ? (
                         <ChannelList 
+                            key={workspace_id}
                             workspaceId={workspace_id}
+                            workspaceName={workspaceName} 
                             onChannelSelect={handleChannelSelect}
                             onError={setError}
                         />
@@ -107,7 +146,6 @@ export default function ChatScreen() {
         </div>
     )
 
-    // Mostrar spinner solo si estamos cargando mensajes Y tenemos un canal seleccionado
     if (isMessagesLoading && currentChannelId) {
         return <LoaderSpinner />
     }
@@ -115,7 +153,7 @@ export default function ChatScreen() {
     return (
         <SlackLayout sidebarContent={sidebarContent}>
             <div className="chat-screen">
-                <ChatHeader workspace={currentWorkspace} />
+                <ChatHeader workspace={workspaces.find(w => (w.workspace || w)._id === workspace_id)} />
                 {currentChannelId ? (
                     <>
                         <Chat />
@@ -124,7 +162,7 @@ export default function ChatScreen() {
                 ) : (
                     <div className="no-channel-selected">
                         <div className="no-channel-content">
-                            <h3>Bienvenido a {currentWorkspace?.name || 'Slack'}</h3>
+                            <h3>Bienvenido a {workspaceName || 'Slack'}</h3>
                             <p>Selecciona un canal para empezar a chatear</p>
                             {!workspace_id && (
                                 <p>O selecciona un workspace primero</p>

@@ -30,6 +30,11 @@ export async function getChannelsByWorkspace(workspace_id) {
             throw new Error(response_data.message || `Error ${response_http.status}: ${response_http.statusText}`)
         }
 
+        // ✅ CORREGIDO: Validar estructura de respuesta
+        if (!response_data.ok) {
+            throw new Error(response_data.message || 'Error en la respuesta del servidor')
+        }
+
         return response_data
 
     } catch (error) {
@@ -64,6 +69,11 @@ export async function getChannelById(channel_id) {
 
         if (!response_http.ok) {
             throw new Error(response_data.message || `Error ${response_http.status}: ${response_http.statusText}`)
+        }
+
+        // ✅ CORREGIDO: Validar estructura de respuesta
+        if (!response_data.ok) {
+            throw new Error(response_data.message || 'Error en la respuesta del servidor')
         }
 
         return response_data
@@ -110,6 +120,11 @@ export async function createChannel(name, description, workspace_id, isPrivate =
             throw new Error(response_data.message || `Error ${response_http.status}: ${response_http.statusText}`)
         }
 
+        // ✅ CORREGIDO: Validar estructura de respuesta
+        if (!response_data.ok) {
+            throw new Error(response_data.message || 'Error en la respuesta del servidor')
+        }
+
         return response_data
 
     } catch (error) {
@@ -153,6 +168,11 @@ export async function updateChannel(channel_id, name, description, isPrivate) {
             throw new Error(response_data.message || `Error ${response_http.status}: ${response_http.statusText}`)
         }
 
+        // ✅ CORREGIDO: Validar estructura de respuesta
+        if (!response_data.ok) {
+            throw new Error(response_data.message || 'Error en la respuesta del servidor')
+        }
+
         return response_data
 
     } catch (error) {
@@ -187,6 +207,11 @@ export async function deleteChannel(channel_id) {
 
         if (!response_http.ok) {
             throw new Error(response_data.message || `Error ${response_http.status}: ${response_http.statusText}`)
+        }
+
+        // ✅ CORREGIDO: Validar estructura de respuesta
+        if (!response_data.ok) {
+            throw new Error(response_data.message || 'Error en la respuesta del servidor')
         }
 
         return response_data
