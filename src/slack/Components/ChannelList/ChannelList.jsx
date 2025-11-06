@@ -274,7 +274,6 @@ export default function ChannelList({ workspaceId, workspaceName, onChannelSelec
             </div>
 
             <div className="search-bar">
-                <IoSearchSharp className="search-icon" />
                 <input
                     type="text"
                     placeholder="Buscar canales"

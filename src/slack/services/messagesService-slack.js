@@ -41,7 +41,8 @@ export const deleteMessageFromWorkspace = async (workspace_id, message_id) => {
         return true
     } catch (error) {
         console.error('Error deleting message:', error)
-        return false
+        // CORRECCIÓN: Propagar el error en lugar de retornar false
+        throw error
     }
 }
 

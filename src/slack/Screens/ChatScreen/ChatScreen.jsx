@@ -37,9 +37,35 @@ export default function ChatScreen() {
 
         if (foundWorkspace) {
             // Extraer el nombre de diferentes estructuras posibles
-            return foundWorkspace.name || 
-                   foundWorkspace.workspace?.name || 
-                   foundWorkspace.workspace_name;
+            return  foundWorkspace.name || 
+                    foundWorkspace.workspace?.name || 
+                    foundWorkspace.workspace_name;
+        }
+        
+        return null;
+    };
+
+    // FUNCIÓN NUEVA MEJORADA: Encontrar el workspace completo
+    const getCurrentWorkspace = () => {
+        if (!workspace_id || workspaces.length === 0) return null;
+        
+        const foundWorkspace = workspaces.find(ws => {
+            // Caso 1: workspace directo
+            if (ws._id === workspace_id) return true;
+            // Caso 2: nested en propiedad workspace
+            if (ws.workspace && ws.workspace._id === workspace_id) return true;
+            // Caso 3: propiedad workspace_id
+            if (ws.workspace_id === workspace_id) return true;
+            return false;
+        });
+
+        if (foundWorkspace) {
+            // Si el workspace está nested, devolver la propiedad workspace
+            if (foundWorkspace.workspace && foundWorkspace.workspace._id === workspace_id) {
+                return foundWorkspace.workspace;
+            }
+            // Si es directo, devolver el workspace completo
+            return foundWorkspace;
         }
         
         return null;
@@ -87,6 +113,9 @@ export default function ChatScreen() {
         setActiveTab('channels')
         setError(null)
     }
+
+    // Obtener el workspace actual usando la nueva función
+    const currentWorkspace = getCurrentWorkspace();
 
     const sidebarContent = (
         <div className="chat-sidebar">
@@ -153,7 +182,9 @@ export default function ChatScreen() {
     return (
         <SlackLayout sidebarContent={sidebarContent}>
             <div className="chat-screen">
-                <ChatHeader workspace={workspaces.find(w => (w.workspace || w)._id === workspace_id)} />
+                {/* CAMBIO CLAVE AQUÍ: Pasar el workspace usando la nueva función */}
+                <ChatHeader workspace={currentWorkspace} />
+                
                 {currentChannelId ? (
                     <>
                         <Chat />

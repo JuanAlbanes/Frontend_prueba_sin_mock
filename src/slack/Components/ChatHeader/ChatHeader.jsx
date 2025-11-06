@@ -3,7 +3,7 @@ import "./ChatHeader.css"
 import { FaArrowLeft } from "react-icons/fa6"
 import { IoChatbubbleEllipses } from "react-icons/io5"
 import { useContext, useState, useEffect } from "react"
-import { MessagesContext } from "../../Context/MessagesContext"
+import { MessagesContext } from "../../context/MessagesContext"
 import { getChannelById } from "../../services/channelService"
 
 export default function ChatHeader({ workspace }) {
@@ -59,14 +59,13 @@ export default function ChatHeader({ workspace }) {
             </div>
             <div className="workspace-header-info">
                 <h2 className="workspace-header-name">
-                    {workspace.name}
-                    {currentChannel && ` • #${currentChannel.name}`}
+                    {currentChannel && `  #${currentChannel.name}`}
                 </h2>
                 <p className="workspace-header-description">
                     {currentChannel 
                         ? (currentChannel.description || `Canal ${currentChannel.name}`)
-                        : (workspace.description || `Workspace ${workspace.name}`)
-                    }
+                        : (workspace.description || `Workspace ${workspace.name}` ) 
+                    } 
                     {loadingChannel && " (cargando...)"}
                 </p>
             </div>
