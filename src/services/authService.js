@@ -118,12 +118,6 @@ export function getToken() {
     return token
 }
 
-// Función para hacer logout
-export function logout() {
-    localStorage.removeItem('token')
-    console.log('Logout realizado, token eliminado')
-}
-
 // Función para verificar si el usuario está autenticado
 export function isAuthenticated() {
     const token = localStorage.getItem('token')

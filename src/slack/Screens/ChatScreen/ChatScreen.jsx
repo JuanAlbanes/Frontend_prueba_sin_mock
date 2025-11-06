@@ -175,8 +175,16 @@ export default function ChatScreen() {
         </div>
     )
 
+    // ✅ CORREGIDO: Spinner solo en el área de chat, no en toda la pantalla
     if (isMessagesLoading && currentChannelId) {
-        return <LoaderSpinner />
+        return (
+            <SlackLayout sidebarContent={sidebarContent}>
+                <div className="chat-screen">
+                    <ChatHeader workspace={currentWorkspace} />
+                    <LoaderSpinner variant="chat-area" text="Cargando mensajes..." />
+                </div>
+            </SlackLayout>
+        )
     }
 
     return (

@@ -7,4 +7,4 @@ export default function LoaderSpinner() {
             <p className="loader-text">Cargando...</p>
         </div>
     )
-}
+} 
