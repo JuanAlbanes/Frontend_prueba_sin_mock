@@ -16,7 +16,7 @@
 }
 
 .workspace-list-header h3 {
-    margin: 0;
+    margin: 0 0 0 45px;
     color: #ffffff;
     font-size: 16px;
     font-weight: 600;
@@ -114,7 +114,7 @@
 
 .workspace-list-actions {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     opacity: 0;
     transition: opacity 0.2s;
 }
@@ -124,34 +124,60 @@
 }
 
 .workspace-list-action-btn {
-    width: 58px;
-    height: 22px;
+    background: none;
     border: none;
-    border-radius: 3px;
-    padding: 4px 8px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s;
-    font-size: 11px;
-    font-weight: 500;
-    color: white;
-    white-space: nowrap;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    width: 28px;
+    height: 28px;
 }
 
+.workspace-list-action-btn:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.workspace-list-action-btn .action-icon {
+    width: 16px;
+    height: 16px;
+}
+
+
+.workspace-list-action-btn.invite-btn {
+    color: #611f69;
+    background-color: rgba(97, 31, 105, 0.1);
+}
+
+.workspace-list-action-btn.invite-btn:hover {
+    background-color: rgba(97, 31, 105, 0.3);
+    color: #ffffff;
+}
+
+
 .workspace-list-action-btn.edit-btn {
-    background: #611f69;
+    color: #1d9bd1;
+    background-color: rgba(29, 155, 209, 0.1);
 }
 
 .workspace-list-action-btn.edit-btn:hover {
-    background: #4a154b;
+    background-color: rgba(29, 155, 209, 0.3);
+    color: #ffffff;
 }
 
 
 .workspace-list-action-btn.delete-btn {
-    background: #eb1e1e;
+    color: #e01e5a;
+    background-color: rgba(224, 30, 90, 0.1);
 }
 
 .workspace-list-action-btn.delete-btn:hover {
-    background: #b91c1c;
+    background-color: rgba(224, 30, 90, 0.3);
+    color: #ffffff;
 }
 
 .loading-workspaces , .error-workspaces , .no-workspaces {
@@ -163,4 +189,24 @@
 
 .error-workspaces {
     color: #ef4444;
+}
+
+.invite-modal-content {
+    text-align: center;
+    padding: 10px;
+}
+
+.invite-description {
+    margin-bottom: 15px;
+    color: #1d1c1d;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.invite-note {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #616061;
+    font-style: italic;
+    line-height: 1.3;
 }

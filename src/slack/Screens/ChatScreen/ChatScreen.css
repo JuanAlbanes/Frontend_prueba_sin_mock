@@ -35,7 +35,7 @@
 
 .tab-button:hover {
     background: #f0f0f0;
-    color: #1d1c1d;
+    color: #ffffff;
 }
 
 .tab-button.active {
@@ -46,20 +46,19 @@
 .tab-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
+} 
 
 .tab-button:disabled:hover {
     background: transparent;
     color: #616061;
-}
+} 
 
 .sidebar-content {
     flex: 1;
     overflow: hidden;
 }
 
-.no-workspace-selected,
-.no-channel-selected {
+.no-workspace-selected, .no-channel-selected {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,8 +67,7 @@
     text-align: center;
 }
 
-.no-workspace-selected p,
-.no-channel-selected p {
+.no-workspace-selected p, .no-channel-selected p {
     color: #616061;
     margin: 0;
 }
