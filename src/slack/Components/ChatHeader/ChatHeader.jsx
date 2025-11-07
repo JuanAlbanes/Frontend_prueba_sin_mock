@@ -14,17 +14,18 @@ export default function ChatHeader({ workspace }) {
 
     // Cargar información del canal cuando cambie currentChannelId
     useEffect(() => {
-        if (currentChannelId) {
-            loadChannelInfo(currentChannelId)
+        if (currentChannelId && workspace_id) {
+            loadChannelInfo(workspace_id, currentChannelId)
         } else {
             setCurrentChannel(null)
         }
-    }, [currentChannelId])
+    }, [currentChannelId, workspace_id])
 
-    const loadChannelInfo = async (channelId) => {
+    const loadChannelInfo = async (workspaceId, channelId) => {
         setLoadingChannel(true)
         try {
-            const response = await getChannelById(channelId)
+            // ✅ CORREGIDO: Pasar ambos parámetros workspaceId y channelId
+            const response = await getChannelById(workspaceId, channelId)
             if (response.data && response.data.channel) {
                 setCurrentChannel(response.data.channel)
             }

@@ -1,10 +1,4 @@
 import { createContext, useState, useRef } from "react"
-import {
-    getMessagesByWorkspaceId,
-    addMessageToWorkspace,
-    deleteMessageFromWorkspace,
-    updateMessageInWorkspace
-} from "../services/messagesService-slack.js"
 import { getMessagesByChannel } from "../../services/messageService.js"
 
 export const MessagesContext = createContext({
@@ -27,21 +21,35 @@ const MessagesContextProvider = ({ children }) => {
     const lastMessageRef = useRef(null)
 
     const loadMessages = async (workspace_id, channel_id) => {
+        // ✅ CORREGIDO: Validar que ambos IDs existen antes de hacer la llamada
+        if (!workspace_id || !channel_id) {
+            console.warn('❌ Missing workspace_id or channel_id:', { workspace_id, channel_id })
+            setMessages([])
+            setIsMessagesLoading(false)
+            return
+        }
+
         setIsMessagesLoading(true)
         setCurrentWorkspaceId(workspace_id)
         setCurrentChannelId(channel_id)
         
         try {
-            const workspaceMessages = await getMessagesByWorkspaceId(workspace_id, channel_id)
+            // ✅ CORREGIDO: Usar la función correcta con ambos parámetros
+            const response = await getMessagesByChannel(workspace_id, channel_id)
             
-            // CORREGIDO: Normalizar los IDs para que todos los mensajes tengan tanto _id como id
-            const normalizedMessages = workspaceMessages.map(message => ({
-                ...message,
-                id: message.id || message._id, // Asegurar que siempre haya un campo `id`
-                _id: message._id || message.id  // Asegurar que siempre haya un campo `_id`
-            }))
-            
-            setMessages(normalizedMessages)
+            if (response && response.ok && response.data && Array.isArray(response.data.messages)) {
+                // CORREGIDO: Normalizar los IDs para que todos los mensajes tengan tanto _id como id
+                const normalizedMessages = response.data.messages.map(message => ({
+                    ...message,
+                    id: message.id || message._id, // Asegurar que siempre haya un campo `id`
+                    _id: message._id || message.id  // Asegurar que siempre haya un campo `_id`
+                }))
+                
+                setMessages(normalizedMessages)
+            } else {
+                console.warn('⚠️ Invalid response structure:', response)
+                setMessages([])
+            }
         } catch (error) {
             console.error('Error loading messages:', error)
             setMessages([])
@@ -55,6 +63,8 @@ const MessagesContextProvider = ({ children }) => {
         if (last && last.workspace_id === workspace_id && last.channel_id === channel_id && last.text === text) return
 
         try {
+            // ✅ NOTA: Esta función necesita ser actualizada en messagesService-slack.js
+            // Por ahora mantenemos la llamada original
             const newMessage = await addMessageToWorkspace(workspace_id, channel_id, text)
             if (newMessage) {
                 setMessages((prev) => [...prev, newMessage])
@@ -68,6 +78,7 @@ const MessagesContextProvider = ({ children }) => {
 
     const handleDeleteMessage = async (workspace_id, message_id) => {
         try {
+            // ✅ NOTA: Esta función necesita ser actualizada en messagesService-slack.js
             const success = await deleteMessageFromWorkspace(workspace_id, message_id)
             if (success) {
                 setMessages((prev) => prev.filter((m) => 
@@ -83,6 +94,7 @@ const MessagesContextProvider = ({ children }) => {
 
     const handleUpdateMessage = async (workspace_id, message_id, newText) => {
         try {
+            // ✅ NOTA: Esta función necesita ser actualizada en messagesService-slack.js
             const updatedMessage = await updateMessageInWorkspace(workspace_id, message_id, newText)
             if (updatedMessage) {
                 setMessages((prev) => 

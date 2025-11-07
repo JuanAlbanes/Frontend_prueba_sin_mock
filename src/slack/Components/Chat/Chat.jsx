@@ -1,12 +1,19 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { MessagesContext } from "../../Context/MessagesContext"
 import { UserContext } from "../../Context/UserContext"
 import Message from "../Message/Message"
 import "./Chat.css"
 
 export default function Chat() {
-    const { messages, isMessagesLoading } = useContext(MessagesContext)
+    const { messages, isMessagesLoading, currentChannelId, workspaceId, loadMessages } = useContext(MessagesContext)
     const { currentUser } = useContext(UserContext)
+
+    // ✅ ACTUALIZADO: Cargar mensajes cuando cambie el canal o workspace
+    useEffect(() => {
+        if (workspaceId && currentChannelId) {
+            loadMessages(workspaceId, currentChannelId)
+        }
+    }, [workspaceId, currentChannelId, loadMessages])
 
     // Función para determinar si el mensaje es del usuario actual
     const isMyMessage = (message) => {

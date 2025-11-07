@@ -159,7 +159,9 @@ export default function ChannelList({ workspaceId, workspaceName, onChannelSelec
             if (result.isConfirmed) {
                 try {
                     await sendRequest(async () => {
+                        // ✅ ACTUALIZADO: Agregar workspaceId a updateChannel
                         const response = await updateChannel(
+                            workspaceId, // ← Nuevo parámetro
                             channel._id,
                             result.value.name, 
                             result.value.description, 
@@ -206,7 +208,11 @@ export default function ChannelList({ workspaceId, workspaceName, onChannelSelec
             if (result.isConfirmed) {
                 try {
                     await sendRequest(async () => {
-                        const response = await deleteChannel(channel._id)
+                        // ✅ ACTUALIZADO: Agregar workspaceId a deleteChannel
+                        const response = await deleteChannel(
+                            workspaceId, // ← Nuevo parámetro
+                            channel._id
+                        )
                         // ✅ CORREGIDO: Validación mejorada de respuesta
                         if (response && response.ok) {
                             await loadChannels(workspaceId)

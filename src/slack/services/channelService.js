@@ -43,12 +43,12 @@ export async function getChannelsByWorkspace(workspace_id) {
     }
 }
 
-export async function getChannelById(channel_id) {
+export async function getChannelById(workspace_id, channel_id) {
     const token = getToken()
     
     try {
         const response_http = await fetch(
-            `${ENVIRONMENT.URL_API}/api/channels/${channel_id}`,
+            `${ENVIRONMENT.URL_API}/api/channels/${workspace_id}/${channel_id}`,
             {
                 method: HTTP_METHODS.GET,
                 headers: {
@@ -133,7 +133,7 @@ export async function createChannel(name, description, workspace_id, isPrivate =
     }
 }
 
-export async function updateChannel(channel_id, name, description, isPrivate) {
+export async function updateChannel(workspace_id, channel_id, name, description, isPrivate) {
     const token = getToken()
     
     try {
@@ -144,7 +144,7 @@ export async function updateChannel(channel_id, name, description, isPrivate) {
         }
 
         const response_http = await fetch(
-            `${ENVIRONMENT.URL_API}/api/channels/${channel_id}`,
+            `${ENVIRONMENT.URL_API}/api/channels/${workspace_id}/${channel_id}`,
             {
                 method: HTTP_METHODS.PUT,
                 headers: {
@@ -181,12 +181,12 @@ export async function updateChannel(channel_id, name, description, isPrivate) {
     }
 }
 
-export async function deleteChannel(channel_id) {
+export async function deleteChannel(workspace_id, channel_id) {
     const token = getToken()
     
     try {
         const response_http = await fetch(
-            `${ENVIRONMENT.URL_API}/api/channels/${channel_id}`,
+            `${ENVIRONMENT.URL_API}/api/channels/${workspace_id}/${channel_id}`,
             {
                 method: HTTP_METHODS.DELETE,
                 headers: {

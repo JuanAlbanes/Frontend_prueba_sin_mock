@@ -2,11 +2,11 @@ import ENVIRONMENT from "../config/environment.js"
 import { CONTENT_TYPE_VALUES, HEADERS, HTTP_METHODS } from "../constants/http.js"
 import { getToken } from "./authService.js"
 
-export async function getMessagesByChannel(channelId) {
+export async function getMessagesByChannel(workspace_id, channelId) {
     const token = getToken()
     
     const response_http = await fetch(
-        `${ENVIRONMENT.URL_API}/api/messages/channel/${channelId}`,
+        `${ENVIRONMENT.URL_API}/api/messages/${workspace_id}/${channelId}`,
         {
             method: HTTP_METHODS.GET,
             headers: {
